@@ -378,6 +378,8 @@ struct ipt_netflow_sock {
 	struct list_head list;
 	struct socket *sock;
 	struct sockaddr_storage addr;	// destination
+	struct sockaddr_storage saddr;	// source
+	char   sdev[IFNAMSIZ];		// source device
 	atomic_t wmem_peak;		// sk_wmem_alloc peak value
 	unsigned int err_connect;	// connect errors
 	unsigned int err_full;		// socket filled error
@@ -414,7 +416,7 @@ struct netflow_aggr_p {
 #define NETFLOW_STAT_TS(count)							 \
 	do {									 \
 		ktime_t kts = ktime_get_real();					 \
-		if (!(__get_cpu_var(ipt_netflow_stat)).count.first.tv64)	 \
+		if (!(__get_cpu_var(ipt_netflow_stat)).count.first_tv64)	 \
 			__get_cpu_var(ipt_netflow_stat).count.first = kts;	 \
 		__get_cpu_var(ipt_netflow_stat).count.last = kts;		 \
 	} while (0);
